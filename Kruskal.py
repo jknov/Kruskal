@@ -39,29 +39,20 @@ def creaMatrizAux(V):
 
 def kruskal(E,V):
    ordenaAristasPorPeso(E,0,len(E)-1)
-   M = creaMatrizAux(V)
+   VL = [ [v.getIndice()] for v in V]
    T = []
    for e in E:
       [v,u] = e.getEndpoints()
       i = v.getIndice()
       j = u.getIndice()
-      print e.getPeso()
-      if M[i][j] == 0:
+      if not (i in VL[j]):
          T.append(e)
-         M[i][j] = 1
-         M[j][i] = 1
-         for r in range(0,len(V)):
-            if M[i][r] == 1:
-               M[j][r] = 1
-               M[r][j] = 1
-            if M[j][r] == 1:
-               M[i][r] = 1
-               M[r][i] = 1
-   for R in M:
-      cont = 0
-      for x in R:
-         cont += x
-      if cont < len(V)-1:
+         L = VL[i] + VL[j]
+         for r in L:
+            VL[r] = L
+         print VL
+   for l in VL:
+      if len(l) < len(V)-1:
          print "no es conexa"
          return T
    return T

@@ -14,6 +14,7 @@ class MyDialog(tkSimpleDialog.Dialog):
         Label(master, text="Peso:").grid(row=0)
 
         self.e1 = Entry(master)
+        self.title("Dame el peso")
 
         self.e1.grid(row=0, column=1)
         return self.e1 # initial focus
@@ -27,28 +28,21 @@ class App:
    def __init__(self, master):
       
       frame = Frame(master)
-      frame.pack()
+      #frame.pack()
       self.master = master
-      self.canvas = Canvas(master, width=1024, height=800)
-      self.canvas.pack(side=RIGHT)
-      #self.canvas.create_line(0, 0, 200, 100)
-      #self.canvas.create_line(0, 100, 200, 0, fill="red", dash=(4, 4))
-      #self.canvas.create_oval(30,30,43,43,fill="blue")
+      self.master.wm_title("Kruskal")
+      self.borrar = Button(master, text="Borrar", fg="red", command=self.limpiar)
+      self.borrar.grid(row=0, sticky=E)
       
+      self.kruskal = Button(master, text="Kruskal", command=self.drawTree, state=DISABLED)
+      self.kruskal.grid(row=0, column=1, sticky=W)
+      
+      self.canvas = Canvas(master, width=1024, height=800)
+      self.canvas.grid(row=1,columnspan=2)
       self.E = []
       self.V = []
       self.clickedVertex = False
       self.canvas.bind("<Button-1>", self.leftclick)
-      #self.canvas.bind("<ButtonRelease-1>", self.release)
-      #self.canvas.bind("<Double-Button-1>", self.doubleclickleft)
-      #self.canvas.bind("<Button-3>",self.rightclick)
-      
-      #self.canvas.create_rectangle(50, 25, 150, 75, fill="blue")
-      self.borrar = Button(frame, text="Borrar", fg="red", command=self.limpiar)
-      self.borrar.pack(side=LEFT)
-      
-      self.kruskal = Button(frame, text="Kruskal", command=self.drawTree, state=DISABLED)
-      self.kruskal.pack(side=LEFT)
       
    
    def findVertex(self,xf,yf):
@@ -104,12 +98,15 @@ class App:
       
    def drawTree(self):
       T = kruskal(self.E,self.V)
+      peso = 0
       for e in T:
          [v1,v2] = e.getEndpoints()
          [x1,y1] = v1.getCoords()
          [x2,y2] = v2.getCoords()
-         self.canvas.create_line(x1, y1, x2, y2, fill="red",width="2")
+         self.canvas.create_line(x1, y1, x2, y2, fill="magenta",width="2")
+         peso += e.getPeso()
       self.kruskal.config(state=DISABLED)
+      self.canvas.create_text(4, 4, text="Peso del arbol: "+str(peso),anchor=NW)
    
    def limpiar(self):
       self.canvas.delete(ALL)
